@@ -33,11 +33,35 @@ trait ClassGenerator
             $classExtends = new Name('\ArrayObject');
         }
 
+        $jsonProps = [];
+
+        foreach($properties as $property){
+          if($property instanceof Stmt\Property){
+            $jsonProps[] = new Node\Expr\ArrayItem(
+                new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $property->props[0]->name),
+                new Node\Scalar\String_($property->props[0]->name));
+          }
+        }
+
+        $methods[] = new Stmt\ClassMethod(
+            'jsonSerialize',
+            [
+                'type'  => Stmt\Class_::MODIFIER_PUBLIC,
+                'stmts' => [
+                    new Stmt\Return_(
+                        new Node\Expr\Array_($jsonProps,['kind' => Node\Expr\Array_::KIND_SHORT])
+                    ),
+                ],
+            ]
+        );
+
+
         return new Stmt\Class_(
             new Name($this->getNaming()->getClassName($name)),
             [
                 'stmts' => array_merge($properties, $methods),
                 'extends' => $classExtends,
+                'implements' => [new Node\Identifier('\JsonSerializable')]
             ]
         );
     }
