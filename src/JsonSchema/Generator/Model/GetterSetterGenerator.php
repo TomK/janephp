@@ -40,7 +40,7 @@ trait GetterSetterGenerator
                         new Expr\PropertyFetch(new Expr\Variable('this'), $property->getPhpName())
                     ),
                 ],
-                'returnType' => $returnType,
+                //'returnType' => $returnType,
             ], [
                 'comments' => [$this->createGetterDoc($property, $namespace, $required)],
             ]
@@ -81,7 +81,7 @@ trait GetterSetterGenerator
                     new Param(new Expr\Variable($this->getNaming()->getPropertyName($property->getPhpName())), null, $setType),
                 ],
                 'stmts' => $stmts,
-                'returnType' => $fluent ? 'self' : null,
+                //'returnType' => $fluent ? 'self' : null,
             ], [
                 'comments' => [$this->createSetterDoc($property, $namespace, $required, $fluent)],
             ]
